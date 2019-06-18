@@ -1,21 +1,50 @@
 import React from "react"
-import { Link } from "gatsby"
+import{graphql} from 'gatsby'
 
-import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
+const IndexPage = ({data}) => {
+  const posts=data.allContentfulPost.edges
+  //const featuredPost=posts[0].node
+  return(
+    <div>
+      
+      {posts.map(({node:post}) =>(
+        <li key={post.id}><img src={post.heroImage.fluid.src} alt={post.title}/>{post.title}</li>
+      ))}
     </div>
-    <Link to="/page-2/">Go to page 2</Link>
-  </Layout>
-)
+  )
+}
+
+export const query = graphql`
+query{
+  allContentfulPost{
+    edges{
+      node{
+        title
+        slug
+        id
+        heroImage{
+          fluid{
+            src
+          }
+        }
+        publishDate(formatString: "MMMM DD, YYYY")
+        featuredVideo{
+          title
+          embedCode
+          source
+        }
+        body{
+         body
+        }
+        tags{
+          title
+          slug
+        }
+      }
+    }
+  }
+}
+`
 
 export default IndexPage
