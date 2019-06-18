@@ -8,6 +8,9 @@ const TagTemplate = ({data, pageContext}) =>{
   return(
     <div>
       <h1>{title}</h1>
+      {posts.map(post =>(
+        <li>{post.title}</li>
+      ))}
     </div>
   )
 }
