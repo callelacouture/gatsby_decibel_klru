@@ -1,5 +1,6 @@
 import React from 'react'
 import { graphql } from 'gatsby'
+import TagList from '../components/TagList'
 
 const PostTemplate = ({data, pageContext}) =>{
   const{
@@ -16,6 +17,8 @@ const PostTemplate = ({data, pageContext}) =>{
     <div>
       <img src={heroImage.fluid.src} />
       <h1>{title}</h1>
+      <p dangerouslySetInnerHTML={{__html:body.childMarkdownRemark.html}}></p>
+      {tags && <TagList tags={tags} />}
      
     </div>
   )
@@ -39,7 +42,9 @@ export const query = graphql`
         source
       }
       body{
-       body
+       childMarkdownRemark{
+         html
+       }
       }
       tags{
         title
