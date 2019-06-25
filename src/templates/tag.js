@@ -1,17 +1,34 @@
 import React from 'react'
 import { graphql } from 'gatsby'
+import {Link} from 'gatsby'
+import TagCards from '../components/TagCards/tagCards'
+import Container from "../components/Container/Container"
 
 const TagTemplate = ({data, pageContext}) =>{
   const posts = data.contentfulTag.post
   const { title, slug } = data.contentfulTag
   const numberOfPost = posts.length
+  const divStyle={
+    display: 'grid',
+    gridTemplateColumns: "1fr 1fr 1fr"
+
+  }
   return(
+    <Container>
     <div>
       <h1>{title}</h1>
+      <div style={divStyle}>
+      <TagCards>
       {posts.map(post =>(
-        <li>{post.title}</li>
+        <div>
+        <img src={post.heroImage.fluid.src}/>
+        <Link to={post.slug}><p>{post.title}</p></Link>
+        </div>
       ))}
+      </TagCards>
+      </div>
     </div>
+    </Container>
   )
 }
 

@@ -1,8 +1,11 @@
 import React from "react"
 import{graphql} from 'gatsby'
 import { Link } from 'gatsby'
-import TagNav from '../components/TagNav'
-//import { link } from "fs";
+import "../styles/main.css"
+import Container from "../components/Container/Container"
+import TagList from '../components/TagList'
+import FeaturedHero from "../components/FeaturedHero/FeaturedHero"
+import LatestNews from "../components/LatestNews/LatestNews"
 
 
 const IndexPage = ({data}) => {
@@ -12,30 +15,46 @@ const IndexPage = ({data}) => {
   const sidePosts=data.featuredSidePost.edges
   //const featuredPost=posts[0].node
   return(
-    <div>
-      <div>
+    <Container>
+      <FeaturedHero className='mainPostDiv'>
+      <div className='topImageDiv'>
         {mainPosts.map(({node:mainPost})=>(
-          <h1><Link to={mainPost.slug}>{mainPost.title}</Link></h1>
+          <div >
+          <img src={mainPost.heroImage.fluid.src} alt={mainPost.title}/>
+          <h2><Link to={mainPost.slug}>{mainPost.title}</Link></h2>
+          </div>
         ))}
-      </div>
-      <div>
+        </div>
+        <div className='sidePostDiv'>
         {sidePosts.map(({node:sidePost})=>(
+          <div>
+          <img src={sidePost.heroImage.fluid.src} alt={sidePost.title}/>
           <h2><Link to={sidePost.slug}>{sidePost.title}</Link></h2>
+        </div>
         ))}
       </div>
-      <div>
+      </FeaturedHero>
+      <TagList>
         {tags.map(({node:tag})=>(
           <li key={tag.id}><Link to={`/${tag.slug}/`}>{tag.title}</Link></li>
         ))}
-      </div>
+      </TagList>
+      
     <div>
+      <LatestNews>
       {posts.map(({node:post}) =>(
-        
-        <li key={post.id}><img src={post.heroImage.fluid.src} alt={post.title}/>
-        <Link to={post.slug}>{post.title}</Link></li>
+        <div key={post.id}>
+          <img className='latestNewsImage' src={post.heroImage.fluid.src} alt={post.title}/>
+          <div className='latestNewsText'>
+            <h1><Link to={post.slug}>{post.title}</Link></h1>
+            <p>{post.publishDate}</p>
+            <p dangerouslySetInnerHTML={{__html:post.body.childMarkdownRemark.excerpt}}></p>
+          </div>   
+          </div>
       ))}
+      </LatestNews>
     </div>
-    </div>
+    </Container>
   )
 }
 
@@ -64,7 +83,12 @@ query{
           source
         }
         body{
-         body
+          childMarkdownRemark{
+            html
+            excerpt(
+              format: HTML
+              pruneLength: 140)
+          }
         }
         tags{
           title
@@ -142,7 +166,10 @@ query{
           }
         }
       },
-  allContentfulTag{
+  allContentfulTag(
+    limit: 10
+    sort: { fields: [post___publishDate], order: DESC }
+  ){
     edges{
       node{
         title
